@@ -8,6 +8,8 @@ import helmet from 'helmet'
 import morgan from 'morgan'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/users.js";
 import { register } from './controllers/auth.js'
 
 /* Configurations */
@@ -21,6 +23,7 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }))
 app.use(morgan("common"))
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+app.use(cors());
 app.use("/assets", express.static(path.join(__dirname, 'public/assets')));
 
 /* File Storage */
@@ -36,6 +39,10 @@ const upload = multer({ storage });
 
 /* Routes with files */
 app.post("auth/register", upload.single("picture", register))
+
+/* Routes */
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 
 /* Mongoose Setup */
 const PORT = process.env.PORT || 6001;
